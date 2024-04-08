@@ -7,7 +7,6 @@ import java.util.UUID;
 import cn.hutool.core.util.StrUtil;
 
 import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Sets;
 
 import com.geekplus.demo.api.constants.Instruction;
 import com.geekplus.demo.api.constants.MessageFieldConstant;
@@ -21,7 +20,13 @@ import com.geekplus.demo.api.util.HttpClient;
 import com.geekplus.demo.api.util.HttpHeader;
 
 public class BoxApiHttpRequestDemo {
-
+    /**
+     * 【回调渠道】确认t_api_callback_msg_channel表中是否有postman_001
+     * 【无请执行】INSERT INTO `t_api_callback_msg_channel` (`channel_id`, `channel_type`, `enable`, `max_retry_times`, `max_retry_timeout`, `channel_url`, `subscribe_channel_ids`) VALUES ('postman_001', 'HTTP', '1', '5', '20000', 'http://localhost:8888/mock/task/callback', '[]');
+     *
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         deliverBox();
     }
@@ -29,7 +34,7 @@ public class BoxApiHttpRequestDemo {
     private static void deliverBox() {
         // 请求货架进站
         String requestUrl = "http://127.0.0.1:8895";
-        String channelId = "yourChannelId";
+        String channelId = "postman_001";
         String requestId = UUID.randomUUID().toString();
         // 创建header对象
         RequestMessageHeader header = new RequestMessageHeader(channelId, requestId);
@@ -39,7 +44,7 @@ public class BoxApiHttpRequestDemo {
         body.put(MessageFieldConstant.TASK_TYPE, TaskType.DELIVER_BOX);
         body.put(MessageFieldConstant.INSTRUCTION, Instruction.GO_FETCH);
         body.put(MessageFieldConstant.STATION_ID, 1);
-        body.put(MessageFieldConstant.BOX_CODE, "B1711038558");
+        body.put(MessageFieldConstant.BOX_CODE, "B1020107001");
         payload.setBody(body);
         // 创建整个消息对象
         RequestMessage requestMessage = new RequestMessage(channelId, MsgType.ROBOT_TASK_REQUEST_MSG, payload);
