@@ -39,7 +39,7 @@ public class BoxApiHttpRequestDemo {
         body.put(MessageFieldConstant.TASK_TYPE, TaskType.DELIVER_BOX);
         body.put(MessageFieldConstant.INSTRUCTION, Instruction.GO_FETCH);
         body.put(MessageFieldConstant.STATION_ID, 1);
-        body.put(MessageFieldConstant.BOX_CODE, "B006412");
+        body.put(MessageFieldConstant.BOX_CODE, "B1711038558");
         payload.setBody(body);
         // 创建整个消息对象
         RequestMessage requestMessage = new RequestMessage(channelId, MsgType.ROBOT_TASK_REQUEST_MSG, payload);
