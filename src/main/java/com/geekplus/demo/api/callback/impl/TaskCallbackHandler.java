@@ -41,7 +41,7 @@ public class TaskCallbackHandler implements CallbackHandler {
                 String instruction = body.getString("instruction");
                 String taskPhase = body.getString("taskPhase");
                 if (TaskPhase.SHELF_ARRIVED.equals(taskPhase) && !Instruction.GO_RETURN.equals(instruction)) {
-                    // GO_FETCH SHELF_ARRIVED 说明进站了，可以送回
+                    // SHELF_ARRIVED 说明进站了，可以送回
                     ShelfReturnTask.addTask(new ShelfReturnTask(requestId + taskId, startTime,
                             Long.valueOf(taskId)));
                 }

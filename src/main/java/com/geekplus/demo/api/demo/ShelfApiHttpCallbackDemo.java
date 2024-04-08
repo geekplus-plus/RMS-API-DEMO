@@ -40,7 +40,7 @@ public class ShelfApiHttpCallbackDemo {
         String channelId = "yourChannelId";
         String instruction = respBody.getString("instruction");
         String taskPhase = respBody.getString("taskPhase");
-        // GO_FETCH SHELF_ARRIVED 说明进站了，可以送回
+        // SHELF_ARRIVED 说明进站了，可以送回
         if (TaskPhase.SHELF_ARRIVED.equals(taskPhase) && !Instruction.GO_RETURN.equals(instruction)) {
             Long taskId = respBody.getLong("taskId");
             String returnRequestId = UUID.randomUUID().toString();
