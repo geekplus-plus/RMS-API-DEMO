@@ -115,7 +115,7 @@ public class GoReturnMessage {
         return message;
     }
 
-    public static String generateGoReturnMessage(Long jobId, int isContinue) {
+    public static String generateGoReturnMessage(String requestId, Long jobId, int isContinue) {
         String message = "{\n"
                 + "    \"id\": \"postman_001\",\n"
                 + "    \"msgType\": \"RobotTaskUpdateRequestMsg\",\n"

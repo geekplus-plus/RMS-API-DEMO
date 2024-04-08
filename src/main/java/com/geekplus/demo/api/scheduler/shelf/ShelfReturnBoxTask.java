@@ -42,10 +42,8 @@ public class ShelfReturnBoxTask extends AbstractJob {
     private long taskId;
     private long time;
     private long startTime;
-    private String boxCode;
     private String requestId;
     private int checkExceptionTaskTime;
-    private String stationId;
 
     private long lastReturnTaskEmptyTime;
 
@@ -58,22 +56,20 @@ public class ShelfReturnBoxTask extends AbstractJob {
         lastReturnTaskEmptyTime = System.currentTimeMillis();
     }
 
-    public ShelfReturnBoxTask(String requestId, long startTime, long taskId, String boxCode, String stationId) {
+    public ShelfReturnBoxTask(String requestId, long startTime, long taskId) {
         this.taskId = taskId;
         this.requestId = requestId;
-        this.boxCode = boxCode;
         this.startTime = startTime;
-        this.stationId = stationId;
     }
 
     // 添加任务
     public static void addTask(ShelfReturnBoxTask task) {
         if (returnBoxTasks.contains(task)) {
-            log.info("returnBoxTaskQueue add task is repeat, taskId:{}, boxCode:{}, requestId:{}", task.getTaskId(), task.getBoxCode(), task.getRequestId());
+            log.info("returnBoxTaskQueue add task is repeat, taskId:{}, requestId:{}", task.getTaskId(), task.getRequestId());
             return;
         }
         returnBoxTasks.add(task);
-        log.info("returnBoxTaskQueue add task suc, taskId:{}, boxCode:{}, requestId:{}", task.getTaskId(), task.getBoxCode(), task.getRequestId());
+        log.info("returnBoxTaskQueue add task suc, taskId:{},  requestId:{}", task.getTaskId(), task.getRequestId());
     }
 
     @Override
@@ -98,7 +94,7 @@ public class ShelfReturnBoxTask extends AbstractJob {
 
     public String goReturnRobotTask(ShelfReturnBoxTask returnBoxTask) {
         String requestMessage = GoReturnMessage.generateGoReturnMessage(returnBoxTask.getRequestId(),
-                returnBoxTask.getTaskId(), returnBoxTask.getBoxCode(), 0, null);
+                returnBoxTask.getTaskId(), 0);
         String result;
         try {
             result = HttpClient.sendPostRequest(requestUrl, requestMessage, HttpHeader.getJsonHeader());

@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.geekplus.demo.api.callback.CallbackHandler;
 import com.geekplus.demo.api.constants.TaskType;
 import com.geekplus.demo.api.scheduler.box.RSPReturnBoxTask;
+import com.geekplus.demo.api.scheduler.shelf.ShelfReturnBoxTask;
 
 
 /**
@@ -33,9 +34,10 @@ public class TaskCallbackHandler implements CallbackHandler {
         long startTime = System.currentTimeMillis();
         String instruction = body.getString("taskType");
         if (StrUtil.isNotEmpty(instruction)) {
-
+            String taskId = body.getString("taskId");
             if (TaskType.DELIVER_SHELF.equals(instruction)) {
-
+                ShelfReturnBoxTask.addTask(new ShelfReturnBoxTask(requestId + taskId, startTime,
+                        Long.valueOf(taskId)));
             } else {
                 List<JSONObject> tasks = (List) body.get("tasks");
                 if (CollUtil.isEmpty(tasks)) {
