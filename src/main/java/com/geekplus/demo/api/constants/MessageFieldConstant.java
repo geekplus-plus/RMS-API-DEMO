@@ -34,5 +34,9 @@ public interface MessageFieldConstant {
      * 任务号
      */
     String TASK_ID = "taskId";
+    /**
+     * 货箱编号
+     */
+    String BOX_CODE = "boxCode";
 
 }
