@@ -13,9 +13,11 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSONObject;
 
 import com.geekplus.demo.api.callback.CallbackHandler;
+import com.geekplus.demo.api.constants.Instruction;
+import com.geekplus.demo.api.constants.TaskPhase;
 import com.geekplus.demo.api.constants.TaskType;
 import com.geekplus.demo.api.scheduler.box.RSPReturnBoxTask;
-import com.geekplus.demo.api.scheduler.shelf.ShelfReturnBoxTask;
+import com.geekplus.demo.api.scheduler.shelf.ShelfReturnTask;
 
 
 /**
@@ -32,12 +34,17 @@ public class TaskCallbackHandler implements CallbackHandler {
     public void process(JSONObject header, JSONObject body) {
         String requestId = header.getString("requestId");
         long startTime = System.currentTimeMillis();
-        String instruction = body.getString("taskType");
-        if (StrUtil.isNotEmpty(instruction)) {
+        String taskType = body.getString("taskType");
+        if (StrUtil.isNotEmpty(taskType)) {
             String taskId = body.getString("taskId");
-            if (TaskType.DELIVER_SHELF.equals(instruction)) {
-                ShelfReturnBoxTask.addTask(new ShelfReturnBoxTask(requestId + taskId, startTime,
-                        Long.valueOf(taskId)));
+            if (TaskType.DELIVER_SHELF.equals(taskType)) {
+                String instruction = body.getString("instruction");
+                String taskPhase = body.getString("taskPhase");
+                if (TaskPhase.SHELF_ARRIVED.equals(taskPhase) && !Instruction.GO_RETURN.equals(instruction)) {
+                    // GO_FETCH SHELF_ARRIVED 说明进站了，可以送回
+                    ShelfReturnTask.addTask(new ShelfReturnTask(requestId + taskId, startTime,
+                            Long.valueOf(taskId)));
+                }
             } else {
                 List<JSONObject> tasks = (List) body.get("tasks");
                 if (CollUtil.isEmpty(tasks)) {

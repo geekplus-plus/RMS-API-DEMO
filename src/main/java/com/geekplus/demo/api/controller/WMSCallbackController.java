@@ -23,6 +23,7 @@ import com.google.common.cache.CacheBuilder;
 
 import com.geekplus.demo.api.callback.CallbackHandler;
 import com.geekplus.demo.api.callback.CallbackStrategyFactory;
+import com.geekplus.demo.api.constants.MsgType;
 import com.geekplus.demo.api.scheduler.quarz.JobContainer;
 import com.geekplus.demo.api.scheduler.quarz.JobMetadata;
 import com.geekplus.demo.api.scheduler.quarz.SchedulerManager;
@@ -57,7 +58,8 @@ public class WMSCallbackController {
     @ResponseBody
     public String callback(@RequestBody String data, @PathVariable("strategyName") String strategyName) {
         if ("test".equalsIgnoreCase(data)) {
-            return callBackMsgResponse(System.currentTimeMillis() + "_test", WAREHOUSE_CALLBACK_MSG, "testOK");
+            // 简单测试这个回调接口是否是通的
+            return callBackMsgResponse(System.currentTimeMillis() + "_test", MsgType.WAREHOUSE_CALLBACK_MSG, "testOK");
         }
         if (!isInit) {
             isInit = initScheduler();
@@ -70,11 +72,13 @@ public class WMSCallbackController {
         String msgType = jsonObject.getString("msgType");
 
         if (Objects.nonNull(requestIdCache.getIfPresent(requestId))) {
+            // 模拟处理幂等
             return callBackMsgResponse(requestId, msgType, "duplicate");
         }
         requestIdCache.put(requestId, 0);
         CallbackHandler callbackHandler = CallbackStrategyFactory.getCallbackHandler(strategyName);
         if (Objects.nonNull(callbackHandler)) {
+            // 模拟器异步处理回调， 千万不要在回调流程夹杂业务逻辑
             ThreadUtil.execAsync(() -> callbackHandler.process(header, body));
             return callBackMsgResponse(requestId, msgType, "success");
         }
@@ -91,16 +95,18 @@ public class WMSCallbackController {
         return true;
     }
 
-    public static final String ROBOT_TASK_CALLBACK_MSG = "RobotTaskCallbackMsg";
-    public static final String ROBOT_TASK_CALLBACK_RESPONSE_MSG = "RobotTaskCallbackResponseMsg";
-    public static final String WAREHOUSE_CALLBACK_MSG = "WarehouseCallbackMsg";
-    public static final String WAREHOUSE_CALLBACK_RESPONSE_MSG = "WarehouseCallbackResponseMsg";
-
+    /**
+     * 收到回调立马反馈，不要在回调流程里处理业务逻辑， 注意反馈的格式必须按照如下msg的方式， 不然RMS会认为发送失败
+     * @param requestId
+     * @param msgType
+     * @param msgResult
+     * @return
+     */
     private String callBackMsgResponse(String requestId, String msgType, String msgResult) {
-        if (msgType.contains(ROBOT_TASK_CALLBACK_MSG)) {
-            msgType = ROBOT_TASK_CALLBACK_RESPONSE_MSG;
-        } else if (msgType.contains(WAREHOUSE_CALLBACK_MSG)) {
-            msgType = WAREHOUSE_CALLBACK_RESPONSE_MSG;
+        if (msgType.contains(MsgType.ROBOT_TASK_CALLBACK_MSG)) {
+            msgType = MsgType.ROBOT_TASK_CALLBACK_RESPONSE_MSG;
+        } else if (msgType.contains(MsgType.WAREHOUSE_CALLBACK_MSG)) {
+            msgType = MsgType.WAREHOUSE_CALLBACK_RESPONSE_MSG;
         }
         String msg = "{\n"
                 + "  \"id\": \"*\",\n"

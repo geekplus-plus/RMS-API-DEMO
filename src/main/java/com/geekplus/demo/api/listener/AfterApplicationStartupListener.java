@@ -24,7 +24,7 @@ public class AfterApplicationStartupListener implements ApplicationListener<Appl
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
        initScheduler();
-       log.info("==========项目启动成功==========");
+       log.info("==========Application start successfully==========");
     }
     private void initScheduler() {
         SchedulerManager.initScheduler();

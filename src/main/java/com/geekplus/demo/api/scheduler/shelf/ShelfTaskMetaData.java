@@ -33,7 +33,7 @@ public class ShelfTaskMetaData extends AbstractJobMetadata {
 
     @Override
     public String implClass() {
-        return ShelfReturnBoxTask.class.getName();
+        return ShelfReturnTask.class.getName();
     }
 
     @Override
