@@ -52,7 +52,7 @@ public class BoxApiHttpCallbackDemo {
             body.put(MessageFieldConstant.TASK_ID, taskId);
             payload.setBody(body);
             // 创建整个消息对象
-            RequestMessage requestMessage = new RequestMessage(channelId, MsgType.ROBOT_TASK_REQUEST_MSG, payload);
+            RequestMessage requestMessage = new RequestMessage(channelId, MsgType.ROBOT_TASK_UPDATE_REQUEST_MSG, payload);
             String result = HttpClient.sendPostRequest(requestUrl, JSON.toJSONString(requestMessage), HttpHeader.getJsonHeader());
             ResponseMessage responseMessage = JSON.parseObject(result, ResponseMessage.class);
             // 业务系统判断result是否成功
