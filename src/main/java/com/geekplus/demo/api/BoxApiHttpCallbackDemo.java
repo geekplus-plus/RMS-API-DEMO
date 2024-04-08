@@ -24,7 +24,7 @@ import com.geekplus.demo.api.util.HttpHeader;
 public class BoxApiHttpCallbackDemo {
 
     public static void main(String[] args) throws Exception {
-        Long taskId = 5124009L;
+        Long taskId = 5124027L;
         String callbackMessage = packageCallBack(taskId) ;
         returnBox(callbackMessage);
     }
@@ -68,10 +68,10 @@ public class BoxApiHttpCallbackDemo {
             // 创建整个消息对象
             RequestMessage requestMessage = new RequestMessage(channelId, MsgType.ROBOT_TASK_UPDATE_REQUEST_MSG, payload);
             String requestMsg = JSON.toJSONString(requestMessage);
+            System.out.println("goReturn example \n:" + requestMsg);
             String result = HttpClient.sendPostRequest(requestUrl, requestMsg, HttpHeader.getJsonHeader());
-            System.out.println("goReturn example \n:" + result);
+            System.out.println("goReturn Response example \n:" + result);
             ResponseMessage responseMessage = JSON.parseObject(result, ResponseMessage.class);
-            System.out.println("responseMessage example \n:" + responseMessage);
             // 业务系统判断result是否成功
         }
     }
